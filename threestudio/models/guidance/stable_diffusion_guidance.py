@@ -26,6 +26,7 @@ class StableDiffusionGuidance(BaseObject):
         enable_attention_slicing: bool = False
         enable_channels_last_format: bool = False
         guidance_scale: float = 100.0
+        guidance_anneal: float = 1.0
         grad_clip: Optional[
             Any
         ] = None  # field(default_factory=lambda: [0, 2.0, 8.0, 1000])
@@ -260,7 +261,8 @@ class StableDiffusionGuidance(BaseObject):
         elif self.cfg.weighting_strategy == "fantasia3d":
             w = (self.alphas[t] ** 0.5 * (1 - self.alphas[t])).view(-1, 1, 1, 1)
         elif self.cfg.weighting_strategy == "ruoxi":
-            w = 1 / (1 - self.alphas[t]).view(-1, 1, 1, 1)
+            w = 1 / (1 - self.alphas[t]).view(-1, 1, 1, 1) ** 0.5
+            self.cfg.guidance_scale *= self.cfg.guidance_anneal
         else:
             raise ValueError(
                 f"Unknown weighting strategy: {self.cfg.weighting_strategy}"

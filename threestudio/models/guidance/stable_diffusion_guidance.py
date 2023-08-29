@@ -124,6 +124,7 @@ class StableDiffusionGuidance(BaseObject):
             )
 
         self.num_train_timesteps = self.scheduler.config.num_train_timesteps
+        self.scheduler.set_timesteps(self.num_train_timesteps, self.device)
         self.set_min_max_steps()  # set to default value
 
         self.alphas: Float[Tensor, "..."] = self.scheduler.alphas_cumprod.to(
@@ -257,12 +258,20 @@ class StableDiffusionGuidance(BaseObject):
             w = 1
         elif self.cfg.weighting_strategy == "fantasia3d":
             w = (self.alphas[t] ** 0.5 * (1 - self.alphas[t])).view(-1, 1, 1, 1)
+        elif self.cfg.weighting_strategy == "ruoxi":
+            w = 1 / (1 - self.alphas[t]).view(-1, 1, 1, 1)
         else:
             raise ValueError(
                 f"Unknown weighting strategy: {self.cfg.weighting_strategy}"
             )
 
-        grad = w * (noise_pred - noise)
+        if self.cfg.weighting_strategy == 'ruoxi':
+            sched: DDIMScheduler = self.scheduler
+            sched.alphas_cumprod = sched.alphas_cumprod.to(t.device)
+            x0 = sched.step(noise_pred, t, latents_noisy).pred_original_sample
+            grad = w * (latents_noisy - self.alphas[t] * x0)
+        else:
+            grad = w * (noise_pred - noise)
 
         guidance_eval_utils = {
             "use_perp_neg": prompt_utils.use_perp_neg,

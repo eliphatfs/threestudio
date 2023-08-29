@@ -260,7 +260,7 @@ class StableDiffusionGuidance(BaseObject):
         elif self.cfg.weighting_strategy == "fantasia3d":
             w = (self.alphas[t] ** 0.5 * (1 - self.alphas[t])).view(-1, 1, 1, 1)
         elif self.cfg.weighting_strategy == "ruoxi":
-            w = min(5, 1 / (1 - self.alphas[t]).view(-1, 1, 1, 1))
+            w = 1 / (1 - self.alphas[t]).view(-1, 1, 1, 1)
         else:
             raise ValueError(
                 f"Unknown weighting strategy: {self.cfg.weighting_strategy}"
@@ -411,7 +411,7 @@ class StableDiffusionGuidance(BaseObject):
         # timestep ~ U(0.02, 0.98) to avoid very high/low noise level
         if self.cfg.weighting_strategy == "ruoxi":
             t = torch.tensor(
-                [self.num_train_timesteps - self.num_train_timesteps * system.global_step // system.trainer.max_steps] * batch_size,
+                [self.num_train_timesteps - self.num_train_timesteps * system.global_step * 39 // system.trainer.max_steps // 40] * batch_size,
                 dtype=torch.long,
                 device=self.device,
             ).clamp(0, self.num_train_timesteps - 1)

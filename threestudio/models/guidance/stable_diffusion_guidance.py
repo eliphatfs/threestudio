@@ -260,7 +260,7 @@ class StableDiffusionGuidance(BaseObject):
         elif self.cfg.weighting_strategy == "fantasia3d":
             w = (self.alphas[t] ** 0.5 * (1 - self.alphas[t])).view(-1, 1, 1, 1)
         elif self.cfg.weighting_strategy == "ruoxi":
-            w = 1 / (1 - self.alphas[t]).view(-1, 1, 1, 1)
+            w = min(5, 1 / (1 - self.alphas[t]).view(-1, 1, 1, 1))
         else:
             raise ValueError(
                 f"Unknown weighting strategy: {self.cfg.weighting_strategy}"

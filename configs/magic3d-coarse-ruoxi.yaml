@@ -5,8 +5,8 @@ seed: 0
 
 data_type: "random-camera-datamodule"
 data:
-  width: 256
-  height: 256
+  width: 128
+  height: 128
   camera_distance_range: [1.5, 2.0]
   elevation_range: [-10, 45]
   light_sample_strategy: "magic3d"

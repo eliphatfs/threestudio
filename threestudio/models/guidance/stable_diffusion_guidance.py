@@ -411,7 +411,7 @@ class StableDiffusionGuidance(BaseObject):
         # timestep ~ U(0.02, 0.98) to avoid very high/low noise level
         if self.cfg.weighting_strategy == "ruoxi":
             t = torch.tensor(
-                [self.num_train_timesteps - self.num_train_timesteps * system.global_step * 39 // system.trainer.max_steps // 40] * batch_size,
+                [self.num_train_timesteps - self.num_train_timesteps * system.global_step * 38 // system.trainer.max_steps // 40] * batch_size,
                 dtype=torch.long,
                 device=self.device,
             ).clamp(0, self.num_train_timesteps - 1)

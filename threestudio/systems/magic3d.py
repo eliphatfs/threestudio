@@ -40,7 +40,7 @@ class Magic3D(BaseLift3DSystem):
         out = self(batch)
         prompt_utils = self.prompt_processor()
         guidance_out = self.guidance(
-            out["comp_rgb"], prompt_utils, **batch, rgb_as_latents=False
+            out["comp_rgb"], prompt_utils, **batch, rgb_as_latents=False, system=self
         )
 
         loss = 0.0

@@ -3,6 +3,7 @@ from dataclasses import dataclass, field
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import pytorch_lightning as pl
 from diffusers import DDIMScheduler, DDPMScheduler, StableDiffusionPipeline
 from diffusers.utils.import_utils import is_xformers_available
 from tqdm import tqdm
@@ -389,6 +390,7 @@ class StableDiffusionGuidance(BaseObject):
         camera_distances: Float[Tensor, "B"],
         rgb_as_latents=False,
         guidance_eval=False,
+        system: pl.LightningModule=None,
         **kwargs,
     ):
         batch_size = rgb.shape[0]
@@ -407,13 +409,20 @@ class StableDiffusionGuidance(BaseObject):
             latents = self.encode_images(rgb_BCHW_512)
 
         # timestep ~ U(0.02, 0.98) to avoid very high/low noise level
-        t = torch.randint(
-            self.min_step,
-            self.max_step + 1,
-            [batch_size],
-            dtype=torch.long,
-            device=self.device,
-        )
+        if self.cfg.weighting_strategy == "ruoxi":
+            t = torch.tensor(
+                [self.num_train_timesteps - self.num_train_timesteps * system.global_step // system.trainer.max_steps] * batch_size,
+                dtype=torch.long,
+                device=self.device,
+            ).clamp(0, self.num_train_timesteps - 1)
+        else:
+            t = torch.randint(
+                self.min_step,
+                self.max_step + 1,
+                [batch_size],
+                dtype=torch.long,
+                device=self.device,
+            )
 
         if self.cfg.use_sjc:
             grad, guidance_eval_utils = self.compute_grad_sjc(

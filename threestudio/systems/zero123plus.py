@@ -227,7 +227,6 @@ class Zero123Plus(BaseLift3DSystem):
             variant="fp16_ema",
             torch_dtype=torch.float16,
         ).to(self.device)
-        self.zero123.enable_sequential_cpu_offload()
         self.zero123plus = DiffusionPipeline.from_pretrained(
             "sudo-ai/zero123plus-v1.1", custom_pipeline="sudo-ai/zero123plus-pipeline",
             torch_dtype=torch.float16
@@ -271,6 +270,7 @@ class Zero123Plus(BaseLift3DSystem):
                 if len(self.buffer):
                     self.buffer.pop(0)
                 while len(self.buffer) < 10:
+                    self.zero123.to(self.device)
                     elev = random.randint(-10, 10)
                     azim = random.randint(-15, 15)
                     gf16 = lambda x: torch.tensor([x]).half().cuda()
@@ -280,6 +280,7 @@ class Zero123Plus(BaseLift3DSystem):
                         num_inference_steps=30
                     ).images[0]
                     self.buffer.append((elev, azim, gen))
+                self.zero123.to('cpu')
             # batch = batch["random_camera"]
             in_elev = 90 - batch['elevation']
             elev, azim, gen = random.choice(self.buffer)

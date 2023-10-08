@@ -274,7 +274,7 @@ class Zero123Plus(BaseLift3DSystem):
                     azim = random.randint(-15, 15)
                     gf16 = lambda x: torch.tensor([x]).half().cuda()
                     gen = self.zero123(
-                        to_rgb_image_13(self.cond_image).resize(256, 256),
+                        to_rgb_image_13(self.cond_image).resize((256, 256)),
                         *gf16([elev, azim, 0]).reshape(3, 1),
                         num_inference_steps=30
                     ).images[0]

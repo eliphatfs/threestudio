@@ -227,6 +227,7 @@ class Zero123Plus(BaseLift3DSystem):
             variant="fp16_ema",
             torch_dtype=torch.float16,
         ).to(self.device)
+        self.zero123.enable_model_cpu_offload()
         self.zero123plus = DiffusionPipeline.from_pretrained(
             "sudo-ai/zero123plus-v1.1", custom_pipeline="sudo-ai/zero123plus-pipeline",
             torch_dtype=torch.float16

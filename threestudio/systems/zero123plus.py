@@ -190,12 +190,12 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
     # w = 1
     # grad = w * (x0 - latents)
     # grad = torch.nan_to_num(grad)
-    # # clip grad for stable training?
-    # # if self.grad_clip_val is not None:
-    # #     grad = grad.clamp(-self.grad_clip_val, self.grad_clip_val)
+    # clip grad for stable training?
+    # if self.grad_clip_val is not None:
+    #     grad = grad.clamp(-self.grad_clip_val, self.grad_clip_val)
 
-    # # loss = SpecifyGradient.apply(latents, grad)
-    # # SpecifyGradient is not straghtforward, use a reparameterization trick instead
+    # loss = SpecifyGradient.apply(latents, grad)
+    # SpecifyGradient is not straghtforward, use a reparameterization trick instead
     # target = (latents - grad).detach()
     # d(loss)/d(latents) = latents - target = latents - (latents - grad) = grad
     loss_sds = 0.5 * F.mse_loss(latents, x0.detach(), reduction="sum")

@@ -203,7 +203,7 @@ class Zero123Plus(BaseLift3DSystem):
         freq: dict = field(default_factory=dict)
         refinement: bool = False
         ambient_ratio_min: float = 0.5
-        cond_image_path: str
+        cond_image_path: str = None
 
     cfg: Config
 

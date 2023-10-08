@@ -291,7 +291,7 @@ class Zero123Plus(BaseLift3DSystem):
             cams = [[30 + 60 * i, 60 if i % 2 == 0 else 105] for i in range(6)]
             old_batch = batch
             batch = rst.torch_to(rst.collate_support_object_proxy(
-                [prepare_batch(*torch.tensor([elev, azim + delta], batch['height'].item()).reshape(-1, 1)) for delta, elev in cams]
+                [prepare_batch(*torch.tensor([elev, azim + delta]).reshape(-1, 1), batch['height'].item()) for delta, elev in cams]
             ), self.device)
             # breakpoint()
             ambient_ratio = (

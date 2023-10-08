@@ -159,7 +159,7 @@ def unscale_image(image):
 
 def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
     # current: 6HWC
-    c = einops.rearrange(current, "(ph pw) h w c -> s c (ph h) (pw w)", s=1, ph=3, pw=2) * 2 - 1
+    c = einops.rearrange(current, "(s ph pw) h w c -> s c (ph h) (pw w)", s=1, ph=3, pw=2) * 2 - 1
     c = scale_image(c)
     c = self.encode_condition_image(c) * self.vae.config.scaling_factor
     latents = scale_latents(c)

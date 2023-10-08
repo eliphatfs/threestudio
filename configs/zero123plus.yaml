@@ -92,7 +92,7 @@ system:
   renderer_type: "nerf-volume-renderer"
   renderer:
     radius: ${system.geometry.radius}
-    num_samples_per_ray: 128
+    num_samples_per_ray: 512
     return_comp_normal: ${gt0:${system.loss.lambda_normal_smooth}}
     return_normal_perturb: ${gt0:${system.loss.lambda_3d_normal_smooth}}
 

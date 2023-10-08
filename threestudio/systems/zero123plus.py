@@ -174,6 +174,7 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
         # pred noise
         x_in = torch.cat([latents_noisy] * 2)
         t_in = t.reshape(-1).cuda()
+        x_in = self.scheduler.scale_model_input(x_in, t_in)
         noise_pred = self.unet(
             x_in, t_in, encoder_hidden_states=encoder_hidden_states, cross_attention_kwargs=cak
         ).sample

@@ -269,7 +269,7 @@ class Zero123Plus(BaseLift3DSystem):
             if step % 30 == 0:
                 if len(self.buffer):
                     self.buffer.pop(0)
-                while len(self.buffer) < 15:
+                while len(self.buffer) < 10:
                     elev = random.randint(-10, 10)
                     azim = random.randint(-15, 15)
                     gf16 = lambda x: torch.tensor([x]).half().cuda()
@@ -284,7 +284,7 @@ class Zero123Plus(BaseLift3DSystem):
             elev, azim, gen = random.choice(self.buffer)
             cams = [[30 + 60 * i, 60 if i % 2 == 0 else 105] for i in range(6)]
             batch = rst.collate_support_object_proxy(
-                [prepare_batch(elev, azim + delta) for delta, elev in cams]
+                [prepare_batch(*torch.tensor([elev, azim + delta]).reshape(-1, 1)) for delta, elev in cams]
             )
             ambient_ratio = (
                 self.cfg.ambient_ratio_min

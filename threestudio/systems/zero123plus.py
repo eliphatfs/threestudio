@@ -174,7 +174,7 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
         latents_noisy = self.scheduler.add_noise(latents, noise, t.reshape(-1))
         # pred noise
         x_in = torch.cat([latents_noisy] * 2)
-        t_in = torch.cat([t.reshape(-1)] * 2)
+        t_in = torch.cat(t.reshape(-1))
         noise_pred = self.unet(
             x_in, t_in, encoder_hidden_states=encoder_hidden_states, cross_attention_kwargs=cak
         ).sample
@@ -184,7 +184,7 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
         noise_pred_cond - noise_pred_uncond
     )
     x0 = self.scheduler.step(
-        noise_pred, t, latents
+        noise_pred, t, latents_noisy
     ).pred_original_sample
     w = 1
     grad = w * (x0 - latents)

@@ -166,7 +166,11 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
     c = self.encode_condition_image(c) * self.vae.config.scaling_factor
     latents = scale_latents(c)
     self.scheduler.set_timesteps(50)
-    t = random.choice(self.scheduler.timesteps)
+    alphas: Float[Tensor, "..."] = self.scheduler.alphas_cumprod.to(
+        current.device
+    )
+    t_index = random.randrange(len(self.scheduler.timesteps))
+    t = self.scheduler.timesteps[t_index]
     with torch.no_grad():
         # add noise
         noise = torch.randn_like(latents)  # TODO: use torch generator
@@ -186,6 +190,7 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
     x0 = self.scheduler.step(
         noise_pred, t, latents_noisy
     ).pred_original_sample
+    w = (1 - alphas[t_index]).reshape(-1, 1, 1, 1) ** 0.5
     # w = 1
     # grad = w * (x0 - latents)
     # grad = torch.nan_to_num(grad)
@@ -197,7 +202,7 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
     # SpecifyGradient is not straghtforward, use a reparameterization trick instead
     # target = (latents - grad).detach()
     # d(loss)/d(latents) = latents - target = latents - (latents - grad) = grad
-    loss_sds = 0.5 * F.mse_loss(latents, x0.detach(), reduction="sum")
+    loss_sds = 0.5 * F.mse_loss(w * latents, w * x0.detach(), reduction="sum")
     return loss_sds
 
 

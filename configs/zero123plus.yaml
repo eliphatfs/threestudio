@@ -6,8 +6,8 @@ seed: 0
 data_type: "single-image-datamodule"
 data: # threestudio/data/image.py -> SingleImageDataModuleConfig
   image_path: ./load/images/hamburger_rgba.png
-  height: [64, 128, 320]
-  width: [64, 128, 320]
+  height: [64, 128, 256]
+  width: [64, 128, 256]
   resolution_milestones: [200, 300]
   default_elevation_deg: 0.0
   default_azimuth_deg: 0.0
@@ -83,11 +83,11 @@ system:
     textureless_prob: 0.05
     albedo_activation: sigmoid
 
-  # background_type: "neural-environment-map-background"
-  # background:
-  #   color_activation: sigmoid
+  background_type: "neural-environment-map-background"
+  background:
+    color_activation: sigmoid
 
-  background_type: "solid-color-background" # unused
+  # background_type: "solid-color-background" # unused
 
   renderer_type: "nerf-volume-renderer"
   renderer:

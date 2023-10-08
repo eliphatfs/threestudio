@@ -288,6 +288,7 @@ class Zero123Plus(BaseLift3DSystem):
             # batch = batch["random_camera"]
             in_elev = 90 - batch['elevation']
             elev, azim, gen = random.choice(self.buffer)
+            self.guidance_prep = zero123plus_guidance_prepare(self.zero123plus, gen)
             cams = [[30 + 60 * i, 60 if i % 2 == 0 else 105] for i in range(6)]
             old_batch = batch
             batch = rst.torch_to(rst.collate_support_object_proxy(

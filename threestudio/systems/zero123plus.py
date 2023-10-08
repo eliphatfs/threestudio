@@ -53,9 +53,9 @@ def to_rgb_image_13(maybe_rgba: Image.Image):
 
 
 def prepare_batch(elev, azim):
-    THETA = math.atan(32 / 2 / 35)
+    THETA = torch.tensor([math.atan(32 / 2 / 35)])
     fovy = THETA * 2
-    camera_distance = 2.7
+    camera_distance = torch.tensor([2.7])
     height = 320
     width = 320
     elev = 90 - elev

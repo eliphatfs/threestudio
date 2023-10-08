@@ -52,12 +52,12 @@ def to_rgb_image_13(maybe_rgba: Image.Image):
         raise ValueError("Unsupported image type.", maybe_rgba.mode)
 
 
-def prepare_batch(elev, azim):
+def prepare_batch(elev, azim, res):
     THETA = torch.tensor([math.atan(32 / 2 / 35)])
     fovy = THETA * 2
     camera_distance = torch.tensor([2.7])
-    height = 320
-    width = 320
+    height = res
+    width = res
     elev = 90 - elev
     elevation = elev * math.pi / 180
     azimuth = azim * math.pi / 180
@@ -291,7 +291,7 @@ class Zero123Plus(BaseLift3DSystem):
             cams = [[30 + 60 * i, 60 if i % 2 == 0 else 105] for i in range(6)]
             old_batch = batch
             batch = rst.torch_to(rst.collate_support_object_proxy(
-                [prepare_batch(*torch.tensor([elev, azim + delta]).reshape(-1, 1)) for delta, elev in cams]
+                [prepare_batch(*torch.tensor([elev, azim + delta], batch['height'].item()).reshape(-1, 1)) for delta, elev in cams]
             ), self.device)
             # breakpoint()
             ambient_ratio = (

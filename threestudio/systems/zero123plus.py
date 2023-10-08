@@ -98,14 +98,14 @@ def prepare_batch(elev, azim):
     mvp_mtx: Float[Tensor, "4 4"] = get_mvp_matrix(c2w, proj_mtx)
 
     return {
-        "rays_o": rays_o,
-        "rays_d": rays_d,
-        "mvp_mtx": mvp_mtx,
-        "camera_positions": camera_position,
-        "light_positions": light_position,
-        "elevation": elev,
-        "azimuth": azim,
-        "camera_distances": camera_distance,
+        "rays_o": rays_o.squeeze(0),
+        "rays_d": rays_d.squeeze(0),
+        "mvp_mtx": mvp_mtx.squeeze(0),
+        "camera_positions": camera_position.squeeze(0),
+        "light_positions": light_position.squeeze(0),
+        "elevation": elev.squeeze(0),
+        "azimuth": azim.squeeze(0),
+        "camera_distances": camera_distance.squeeze(0),
         "height": height,
         "width": width,
     }
@@ -289,7 +289,7 @@ class Zero123Plus(BaseLift3DSystem):
             batch = rst.torch_to(rst.collate_support_object_proxy(
                 [prepare_batch(*torch.tensor([elev, azim + delta]).reshape(-1, 1)) for delta, elev in cams]
             ), self.device)
-            breakpoint()
+            # breakpoint()
             ambient_ratio = (
                 self.cfg.ambient_ratio_min
                 + (1 - self.cfg.ambient_ratio_min) * random.random()

@@ -169,7 +169,7 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
     alphas: Float[Tensor, "..."] = self.scheduler.alphas_cumprod.to(
         current.device
     )
-    t_index = random.randrange(len(self.scheduler.timesteps))
+    t_index = random.randrange(1, len(self.scheduler.timesteps) - 1)
     t = self.scheduler.timesteps[t_index]
     with torch.no_grad():
         # add noise

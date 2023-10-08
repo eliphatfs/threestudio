@@ -11,8 +11,8 @@ data: # threestudio/data/image.py -> SingleImageDataModuleConfig
   resolution_milestones: [200, 300]
   default_elevation_deg: 0.0
   default_azimuth_deg: 0.0
-  default_camera_distance: 3.8
-  default_fovy_deg: 20.0
+  default_camera_distance: 2.7
+  default_fovy_deg: 49.13
   requires_depth: ${cmaxgt0orcmaxgt0:${system.loss.lambda_depth},${system.loss.lambda_depth_rel}}
   requires_normal: ${cmaxgt0:${system.loss.lambda_normal}}
   random_camera: # threestudio/data/uncond.py -> RandomCameraDataModuleConfig
@@ -25,8 +25,8 @@ data: # threestudio/data/image.py -> SingleImageDataModuleConfig
     eval_batch_size: 1
     elevation_range: [-10, 80]
     azimuth_range: [-180, 180]
-    camera_distance_range: [3.8, 3.8]
-    fovy_range: [20.0, 20.0] # Zero123 has fixed fovy
+    camera_distance_range: [2.7, 2.7]
+    fovy_range: [49.13, 49.13] # Zero123 has fixed fovy
     progressive_until: 0
     camera_perturb: 0.0
     center_perturb: 0.0

@@ -132,9 +132,8 @@ def zero123plus_guidance_prepare(self, image, guidance_scale=4):
         False
     )
     ramp = global_embeds.new_tensor(self.config.ramping_coefficients).unsqueeze(-1)
-    encoder_hidden_states = encoder_hidden_states + global_embeds * ramp
     cak = dict(cond_lat=cond_lat)
-    return encoder_hidden_states, cak
+    return torch.cat([encoder_hidden_states, encoder_hidden_states + global_embeds * ramp]), cak
 
 
 def scale_latents(latents):

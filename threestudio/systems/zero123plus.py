@@ -175,14 +175,16 @@ def zero123plus_guidance_run(self, current, encoder_hidden_states, cak):
         noise_pred = self.unet(
             x_in, t_in, encoder_hidden_states=encoder_hidden_states, cross_attention_kwargs=cak
         ).sample
-
+    x0 = self.scheduler.step(
+        noise_pred, t, latents
+    ).pred_original_sample
     # perform guidance
     noise_pred_uncond, noise_pred_cond = noise_pred.chunk(2)
     noise_pred = noise_pred_uncond + self.cfg.guidance_scale * (
         noise_pred_cond - noise_pred_uncond
     )
     w = 1
-    grad = w * (noise_pred - noise)
+    grad = w * (x0 - latents)
     grad = torch.nan_to_num(grad)
     # clip grad for stable training?
     if self.grad_clip_val is not None:

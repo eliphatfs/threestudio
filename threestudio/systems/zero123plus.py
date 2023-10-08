@@ -285,9 +285,11 @@ class Zero123Plus(BaseLift3DSystem):
             in_elev = 90 - batch['elevation']
             elev, azim, gen = random.choice(self.buffer)
             cams = [[30 + 60 * i, 60 if i % 2 == 0 else 105] for i in range(6)]
+            old_batch = batch
             batch = rst.torch_to(rst.collate_support_object_proxy(
                 [prepare_batch(*torch.tensor([elev, azim + delta]).reshape(-1, 1)) for delta, elev in cams]
             ), self.device)
+            breakpoint()
             ambient_ratio = (
                 self.cfg.ambient_ratio_min
                 + (1 - self.cfg.ambient_ratio_min) * random.random()

@@ -295,7 +295,7 @@ class Zero123Plus(BaseLift3DSystem):
             in_elev = 90 - batch['elevation']
             elev, azim, gen = random.choice(self.buffer)
             self.guidance_prep = zero123plus_guidance_prepare(self.zero123plus, gen)
-            cams = [[30 + 60 * i, 60 if i % 2 == 0 else 105] for i in range(6)]
+            cams = [[30 + 60 * i, 60 if i % 2 == 0 else 110] for i in range(6)]
             old_batch = batch
             batch = rst.torch_to(rst.collate_support_object_proxy(
                 [prepare_batch(*torch.tensor([elev, azim + delta]).reshape(-1, 1), batch['rgb'].shape[-2]) for delta, elev in cams]
